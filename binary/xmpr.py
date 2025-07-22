@@ -15,7 +15,7 @@ class XMPR:
         
         if data:
             self.read(data)
-        
+    
     def read(self, data):
         xmpr_magic, \
         xprm_offset, xprm_lenght, \
@@ -38,10 +38,10 @@ class XMPR:
 class XMPR_Proprieties:
     STRUCT = Struct("IIII 32s IHHI")
     def __init__(self, data=None):
-        self.Hash_PrimitiveName = 0
-        self.Hash_MaterialName = 0
-        self.Hash_Unk = 0
-        self.Hash_VisibilityNode = 0
+        self.Hash_PrimitiveName: Crc32
+        self.Hash_MaterialName: Crc32
+        self.Hash_Unk: Crc32
+        self.Hash_VisibilityNode: Crc32
         self.Unk: bytes | list
         self.DrawPriority = 0
         self.PrimitiveType = 0
@@ -50,18 +50,17 @@ class XMPR_Proprieties:
         
         if data:
             self.read(data)
-        
+    
     def read(self, data):
-        self.Hash_PrimitiveName, \
-        self.Hash_MaterialName, \
-        self.Hash_Unk, \
-        self.Hash_VisibilityNode, \
+        hash_primitive_name, hash_material_name, hash_unk, hash_visibility_node, \
         self.Unk, \
-        self.DrawPriority, \
-        self.PrimitiveType, \
-        self.PrimitiveUnk, \
-        self.NodeTableLength = \
+        self.DrawPriority, self.PrimitiveType, self.PrimitiveUnk, self.NodeTableLength = \
             unpack_from(XMPR_Proprieties.STRUCT.format, data)
+        
+        self.Hash_PrimitiveName = Crc32(hash_primitive_name)
+        self.Hash_MaterialName = Crc32(hash_material_name)
+        self.Hash_Unk = Crc32(hash_unk)
+        self.Hash_VisibilityNode = Crc32(hash_visibility_node)
 
 class XPRM:
     MAGIC = b"XPRM"
@@ -75,10 +74,8 @@ class XPRM:
         
     def read(self, data):
         xprm_magic, \
-        xpvb_offset, \
-        xpvb_lenght, \
-        xpvi_offset, \
-        xpvi_lenght = \
+        xpvb_offset, xpvb_lenght, \
+        xpvi_offset, xpvi_lenght = \
             unpack_from(XPRM.STRUCT.format, data)
         
         magic_check(xprm_magic, XPRM.MAGIC)
@@ -95,7 +92,7 @@ class XPVB:
         
         if data:
             self.read(data)
-        
+    
     def read(self, data):
         xpvb_magic, \
         att_buffer_offset, \
@@ -165,7 +162,7 @@ class XPVI:
         
         if data:
             self.read(data)
-        
+    
     def read(self, data):
         xpvi_magic, \
         self.PrimitiveType, \

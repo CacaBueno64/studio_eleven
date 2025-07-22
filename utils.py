@@ -35,3 +35,12 @@ def triangulate(strips):
             if t0 == t1 or t1 == t2 or t2 == t0: continue
             triangles.append((t0, t1, t2) if j else (t0, t2, t1))
     return triangles
+
+class Crc32:
+    def __init__(self, hash, name=None):
+        self.Hash = hash
+        self.Name = "" or name
+    def __sizeof__(self):
+        return 4
+    def __str__(self):
+        return self.Name if self.Name else f"{self.Hash:08X}"
