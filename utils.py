@@ -44,3 +44,15 @@ class Crc32:
         return 4
     def __str__(self):
         return self.Name if self.Name else f"{self.Hash:08X}"
+
+from struct import unpack
+def unpack_vector(data, vector: int):
+    return unpack("<" + "f" * vector, data[:4 * vector])
+
+def unpack_matrix(data, col, row):
+    matrix = []
+    offset = 0
+    for i in row:
+        matrix.append(unpack_vector(data[offset:offset+col], col))
+        offset += col
+    return matrix
