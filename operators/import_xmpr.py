@@ -26,8 +26,8 @@ def make_mesh(xmpr_mesh: xmpr.XMPR, armature=None, bones=None, lib=None, txp=Non
         texcoord0.append(uv_convert(xmpr_mesh.XPRM.XPVB.Vertices[i]["Texcoord0"]))
         texcoord1.append(uv_convert(xmpr_mesh.XPRM.XPVB.Vertices[i]["Texcoord1"]))
         colors.append(xmpr_mesh.XPRM.XPVB.Vertices[i]["Color"])
-    indices   = xmpr_mesh.XPRM.XPVI.Indices
-    if xmpr_mesh.XPRM.XPVI.PrimitiveType == 2:
+    indices = xmpr_mesh.XPRM.XPVI.Indices
+    if xmpr_mesh.XPRM.XPVI.PrimitiveType == 2: # triangle strips
         indices = triangulate([indices])
     
     # draw the vertex positions and faces

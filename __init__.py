@@ -11,6 +11,8 @@ if "binary" in locals():
     importlib.reload(compression)
     importlib.reload(archive)
     importlib.reload(xmpr)
+    importlib.reload(joint)
+    importlib.reload(resource)
 
 bl_info = {
     "name": "Studio Eleven",

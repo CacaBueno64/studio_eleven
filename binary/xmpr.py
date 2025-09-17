@@ -38,10 +38,10 @@ class XMPR:
 class XMPR_Proprieties:
     STRUCT = Struct("IIII 32s IHHI")
     def __init__(self, data=None):
-        self.Hash_PrimitiveName: Crc32
-        self.Hash_MaterialName: Crc32
-        self.Hash_Unk: Crc32
-        self.Hash_VisibilityNode: Crc32
+        self.Hash_PrimitiveName = 0
+        self.Hash_MaterialName = 0
+        self.Hash_Unk = 0
+        self.Hash_VisibilityNode = 0
         self.Unk: bytes | list
         self.DrawPriority = 0
         self.PrimitiveType = 0
@@ -52,15 +52,10 @@ class XMPR_Proprieties:
             self.read(data)
     
     def read(self, data):
-        hash_primitive_name, hash_material_name, hash_unk, hash_visibility_node, \
+        self.Hash_PrimitiveName, self.Hash_MaterialName, self.Hash_Unk, self.Hash_VisibilityNode, \
         self.Unk, \
         self.DrawPriority, self.PrimitiveType, self.PrimitiveUnk, self.NodeTableLength = \
             unpack_from(XMPR_Proprieties.STRUCT.format, data)
-        
-        self.Hash_PrimitiveName = Crc32(hash_primitive_name)
-        self.Hash_MaterialName = Crc32(hash_material_name)
-        self.Hash_Unk = Crc32(hash_unk)
-        self.Hash_VisibilityNode = Crc32(hash_visibility_node)
 
 class XPRM:
     MAGIC = b"XPRM"

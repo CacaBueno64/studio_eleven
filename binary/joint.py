@@ -5,8 +5,10 @@ from struct import pack, unpack, unpack_from, Struct
 class MBN:
     HEADER = Struct("<III")
     def __init__(self, data=None):
-        self.Hash_Name: Crc32
-        self.Hash_ParentName: Crc32
+        self.Name = ""
+        self.ParentName = ""
+        self.Hash_Name = 0
+        self.Hash_ParentName = 0
         
         self.Type = 0
         

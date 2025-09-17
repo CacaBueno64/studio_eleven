@@ -5,8 +5,6 @@ from struct import pack, unpack, unpack_from, Struct
 import zlib
 
 class Archive:
-    HEADER_V2 = Struct("<BB HHHHHI")
-    FILE_ENTRY_V2 = Struct("<IHHHBB")
     MAGIC_V1 = b"XFSP"
     MAGIC_V2 = b"XPCK"
     def __init__(self, data=None):
@@ -18,7 +16,7 @@ class Archive:
     def read(self, data):
         magic = data[ : 4]
         
-        if magic == b"XFSP":
+        if magic == Archive.MAGIC_V1:
             files = {}
             file_count = unpack("<H", data[4:6])[0] & 0xFFF
             file_info_offset = unpack("<H", data[6:8])[0] * 4
@@ -54,7 +52,8 @@ class Archive:
             sorted_files = {i: files[i] for i in file_names}
             
             self.Files = sorted_files
-        elif magic == b"XPCK":
+        
+        elif magic == Archive.MAGIC_V2:
             file_count = unpack("<H", data[4:6])[0] & 0xFFF
             file_info_offset = unpack("<H", data[6:8])[0] * 4
             file_table_offset = unpack("<H", data[8:10])[0] * 4
@@ -91,5 +90,6 @@ class Archive:
                     self.Files[name] = hash_to_data[crc]
                 else:
                     print("Couldn't find", name, hex(crc))
+        
         else:
-            raise ValueError(f"File magic not recognized.\nGot: {magic}\nExpected: {b'XFSP'} or {b'XPCK'}")
+            raise ValueError(f"File identifier not recognized.\nGot: {magic}\nExpected: {b'XFSP'} or {b'XPCK'}")

@@ -1,3 +1,5 @@
+from struct import unpack, Struct
+
 def magic_check(magic: bytes | str, expected: bytes | str) -> Exception | None:
     if magic != expected:
         raise ValueError(f"File magic not recognized.\nGot: {magic}\nExpected: {expected}")
@@ -36,23 +38,15 @@ def triangulate(strips):
             triangles.append((t0, t1, t2) if j else (t0, t2, t1))
     return triangles
 
-class Crc32:
-    def __init__(self, hash, name=None):
-        self.Hash = hash
-        self.Name = "" or name
-    def __sizeof__(self):
-        return 4
-    def __str__(self):
-        return self.Name if self.Name else f"{self.Hash:08X}"
-
-from struct import unpack
 def unpack_vector(data, vector: int):
-    return unpack("<" + "f" * vector, data[:4 * vector])
+    STRUCT = Struct("<" + "f" * vector)
+    return list(unpack(STRUCT.format, data[:STRUCT.size]))
 
 def unpack_matrix(data, col, row):
     matrix = []
-    offset = 0
-    for i in row:
-        matrix.append(unpack_vector(data[offset:offset+col], col))
-        offset += col
+    for i in range(row):
+        matrix.append(unpack_vector(data[(col * 3) * i:], col))
     return matrix
+
+def read_string(data: bytes) -> str:
+    return data.split(b"\x00")[0]
